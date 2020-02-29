@@ -1,0 +1,57 @@
+Config {
+  font = "xft:DejaVu Sans Book:size=12:antialias=true",
+  bgColor = "black",
+  fgColor = "grey",
+  position = TopW L 90,
+  commands =
+    [
+      Run Weather "KTHV" [
+        "-t", "<fc=#4682B4><tempF></fc>°F <skyCondition>"
+      ] 36000,
+      Run CoreTemp [ 
+        "-t", "<core0>,<core1>,<core2>,<core3>,<core4>,<core5>",
+        "--Low", "70",
+        "--High", "80",
+        "--low", "darkgreen",
+        "--normal", "darkorange",
+        "--high", "darkred"
+      ] 50,
+      Run MultiCpu [
+        "-t", "<total0>,<total1>,<total2>,<total3>,<total4>,<total5>",
+        "--Low", "50",
+        "--High", "85",
+        "--low", "darkgreen",
+        "--normal", "darkorange",
+        "--high", "darkred"
+      ] 10,
+      Run Memory [
+        "-t", "<usedratio>%",
+        "--Low", "20",
+        "--High", "90",
+        "--low", "darkgreen",
+        "--normal", "darkorange",
+        "--high", "darkred"
+      ] 10,
+      Run Battery [
+        "-t", "<acstatus>",
+        "--Low", "10",
+        "--High", "80",
+        "--low", "darkred",
+        "--normal", "darkorange",
+        "--high", "darkgreen",
+        "--",
+          "-o", "<left>% (<timeleft>)",
+          "-O", "<fc=#dAA520>Charging</fc>",
+          "-i", "<fc=#006000>Charged</fc>"
+      ] 50,
+      Run Date "%a %b %_d %l:%M" "date" 10,
+      Run Kbd [
+        ("us(dvorak)", "<fc=#4488FB>DV</fc>"),
+        ("us", "<fc=#8B0000>US</fc>")
+      ],
+      Run StdinReader
+    ],
+  sepChar = "@",
+  alignSep = "}{",
+  template = "@StdinReader@ }{ Batt: @battery@ | CPU(%): @multicpu@ | CPU(°C): @coretemp@ | Mem: @memory@    <fc=#ee9a00>@date@</fc> | @KTHV@ || @kbd@"
+}
