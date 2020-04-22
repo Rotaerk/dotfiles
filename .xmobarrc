@@ -2,7 +2,6 @@ Config {
   font = "xft:DejaVu Sans Book:size=12:antialias=true",
   bgColor = "black",
   fgColor = "grey",
-  position = TopW L 90,
   commands =
     [
       Run Weather "KTHV" [

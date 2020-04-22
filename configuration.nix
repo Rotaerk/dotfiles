@@ -4,6 +4,15 @@
 
 { config, pkgs, ... }:
 
+let
+  nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload" ''
+    export __NV_PRIME_RENDER_OFFLOAD=1
+    export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
+    export __GLX_VENDOR_LIBRARY_NAME=nvidia
+    export __VK_LAYER_NV_optimus=NVIDIA_only
+    exec -a "$0" "$@"
+  '';
+in
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -18,7 +27,7 @@
       efi.canTouchEfiVariables = true;
       grub.useOSProber = true;
     };
-    kernelPackages = pkgs.linuxPackages_5_3;
+    kernelPackages = pkgs.linuxPackages_5_6;
     blacklistedKernelModules = [ "ucsi_acpi" ];
   };
 
@@ -41,22 +50,46 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  environment.systemPackages = with pkgs; [
-    vim
-    kakoune
-  ];
+  environment = {
+    variables = {
+      EDITOR = "kak";
+      VISUAL = "kak";
+    };
+    systemPackages = with pkgs; [
+      nvidia-offload
+
+      alacritty
+      dmenu
+      firefox
+      git
+      glxinfo
+      hexchat
+      kakoune
+      ledmon
+      lshw
+      nix-index
+      pciutils
+      xmobar
+      xorg.xcursorthemes
+      xorg.xdpyinfo
+      xorg.xkill
+      xsel
+    ];
+  };
 
   hardware = {
-    bumblebee = {
-      enable = true;
-      driver = "nouveau";
-    };
     pulseaudio.enable = true;
 
     opengl = {
       enable = true;
       driSupport32Bit = true;
       setLdLibraryPath = true;
+    };
+
+    nvidia.prime = {
+      offload.enable = true;
+      intelBusId = "PCI:0:2:0";
+      nvidiaBusId = "PCI:1:0:0";
     };
   };
 
@@ -74,12 +107,13 @@
         enable = true;
         accelSpeed = "0.5";
         naturalScrolling = true;
+        disableWhileTyping = true;
       };
       windowManager.xmonad = {
         enable = true;
         extraPackages = hp: [ hp.xmonad-contrib ];
       };
-      videoDrivers = [ "modesetting" ];
+      videoDrivers = [ "nvidia" ];
     };
   };
 
