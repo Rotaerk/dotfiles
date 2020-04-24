@@ -37,6 +37,7 @@
 
     systemPackages = with pkgs; [
       alacritty
+      discord
       dmenu
       firefox
       gitFull
