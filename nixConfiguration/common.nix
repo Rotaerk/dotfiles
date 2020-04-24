@@ -52,6 +52,7 @@
       unzip
       vlc
       xmobar
+      xorg.xcursorthemes
       xorg.xdpyinfo
       xorg.xkill
       xsel
