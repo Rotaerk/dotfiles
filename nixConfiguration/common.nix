@@ -41,6 +41,7 @@
       dmenu
       firefox
       gitFull
+      git-lfs
       glxinfo
       hexchat
       kakoune
