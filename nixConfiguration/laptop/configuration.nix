@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, ... }:
 
 let
@@ -15,9 +11,10 @@ let
 in
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [
       ./hardware-configuration.nix
       ./private.nix
+      ./common.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -28,7 +25,6 @@ in
       grub.useOSProber = true;
     };
     kernelPackages = pkgs.linuxPackages_5_6;
-    blacklistedKernelModules = [ "ucsi_acpi" ];
   };
 
   networking = {
@@ -41,56 +37,12 @@ in
     wireless.enable = true; # Enables wireless support via wpa_supplicant.
   };
 
-  console = {
-    packages = [ pkgs.terminus_font ];
-    keyMap = "dvorak";
-    font = "ter-132n";
-  };
-  time.timeZone = "America/New_York";
+  environment.systemPackages = [ nvidia-offload ];
 
-  nixpkgs.config.allowUnfree = true;
-
-  environment = {
-    variables = {
-      EDITOR = "kak";
-      VISUAL = "kak";
-    };
-    systemPackages = with pkgs; [
-      nvidia-offload
-
-      alacritty
-      dmenu
-      firefox
-      git
-      glxinfo
-      hexchat
-      kakoune
-      ledmon
-      lshw
-      nix-index
-      pciutils
-      xmobar
-      xorg.xcursorthemes
-      xorg.xdpyinfo
-      xorg.xkill
-      xsel
-    ];
-  };
-
-  hardware = {
-    pulseaudio.enable = true;
-
-    opengl = {
-      enable = true;
-      driSupport32Bit = true;
-      setLdLibraryPath = true;
-    };
-
-    nvidia.prime = {
-      offload.enable = true;
-      intelBusId = "PCI:0:2:0";
-      nvidiaBusId = "PCI:1:0:0";
-    };
+  hardware.nvidia.prime = {
+    offload.enable = true;
+    intelBusId = "PCI:0:2:0";
+    nvidiaBusId = "PCI:1:0:0";
   };
 
   services = {
@@ -98,34 +50,15 @@ in
       lidSwitch = "ignore";
     };
     xserver = {
-      enable = true;
       dpi = 160;
-      layout = "us,us";
-      xkbVariant = "dvorak,";
-      xkbOptions = "ctrl:swapcaps,grp:ctrl_alt_toggle";
       libinput = {
         enable = true;
         accelSpeed = "0.5";
         naturalScrolling = true;
         disableWhileTyping = true;
       };
-      windowManager.xmonad = {
-        enable = true;
-        extraPackages = hp: [ hp.xmonad-contrib ];
-      };
       videoDrivers = [ "nvidia" ];
     };
   };
-
-  users.users.rotaerk = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ];
-  };
-
-  # This value determines the NixOS release with which your system is to be
-  # compatible, in order to avoid breaking some software such as database
-  # servers. You should change this only after NixOS release notes say you
-  # should.
-  system.stateVersion = "20.03"; # Did you read the comment?
 }
 
