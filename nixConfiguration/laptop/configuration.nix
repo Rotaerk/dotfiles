@@ -15,7 +15,6 @@
       efi.canTouchEfiVariables = true;
       grub.useOSProber = true;
     };
-    kernelPackages = pkgs.linuxPackages_5_6;
   };
 
   networking = {
@@ -46,9 +45,11 @@
       dpi = 160;
       libinput = {
         enable = true;
-        accelSpeed = "0.5";
-        naturalScrolling = true;
-        disableWhileTyping = true;
+        touchpad = {
+          accelSpeed = "0.5";
+          naturalScrolling = true;
+          disableWhileTyping = true;
+        };
       };
       videoDrivers = [ "nvidia" ];
     };
