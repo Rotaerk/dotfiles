@@ -24,7 +24,11 @@
     useDHCP = false;
     interfaces.wlo1.useDHCP = true;
   
-    wireless.enable = true; # Enables wireless support via wpa_supplicant.
+    wireless = {
+      enable = true; # Enables wireless support via wpa_supplicant.
+      userControlled.enable = true;
+      interfaces = [ "wlo1" ];
+    };
   };
 
   hardware.nvidia = {
